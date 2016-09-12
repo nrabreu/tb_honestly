@@ -75,6 +75,7 @@ def create_tweet():
 
         if "@" in cleantext or \
         "http" in cleantext or \
+        "#" in cleantext or \
         "https" in cleantext:
             print "~~~"
             print "nooo"
