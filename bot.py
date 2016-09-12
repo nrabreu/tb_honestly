@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Copyright (c) 2015–2016 Molly White
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,22 +22,73 @@
 
 import os
 import tweepy
+import random
+
 from secrets import *
 from time import gmtime, strftime
 
 
 # ====== Individual bot configuration ==========================
-bot_username = ''
+bot_username = 'honestly'
 logfile_name = bot_username + ".log"
 
 # ==============================================================
 
-
 def create_tweet():
+    auth = tweepy.OAuthHandler(C_KEY, C_SECRET)
+    auth.set_access_token(A_TOKEN, A_TOKEN_SECRET)
+    api = tweepy.API(auth)
     """Create the text of the tweet you want to send."""
     # Replace this with your code!
-    text = ""
-    return text
+
+    searchResults = api.search(q="honestly -rt -@",lang="en")
+
+    for result in list(searchResults):
+        cleantext = result.text.lower()
+        if result.in_reply_to_status_id != None:
+            searchResults.remove(result)
+
+        elif "honestly" not in cleantext.split(' ')[0]:
+            if "honestly" not in cleantext.split(' ')[1]:
+                searchResults.remove(result)
+
+        elif "@" in cleantext or \
+        "http" in cleantext or \
+        "https" in cleantext or \
+        "#"    in cleantext or \
+        "nigg"    in cleantext or \
+        "hitler"    in cleantext:
+            searchResults.remove(result)
+
+        elif "@" in cleantext.split(' ')[0]:
+            searchResults.remove(result)
+
+    for result in list(searchResults):
+        cleantext = result.text.lower()
+        #print result
+
+        if "honestly" not in result.text.split(' ')[0].lower():
+            if "honestly" not in result.text.split(' ')[1].lower():
+                print "~~~"
+                print "nope"
+                print "~~~"
+
+        if "@" in cleantext or \
+        "http" in cleantext or \
+        "https" in cleantext:
+            print "~~~"
+            print "nooo"
+            print "~~~"
+            searchResults.remove(result)
+
+        else:
+            print "~~~"
+            print result.text.encode('utf-8')
+            print "~~~"
+
+    final = random.choice(searchResults).text
+    final.replace("&amp;","&")
+    return final
 
 
 def tweet(text):
@@ -51,7 +104,7 @@ def tweet(text):
     except tweepy.error.TweepError as e:
         log(e.message)
     else:
-        log("Tweeted: " + text)
+        log("Tweeted: " + text.encode('utf-8'))
 
 
 def log(message):
