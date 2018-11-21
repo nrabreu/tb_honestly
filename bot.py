@@ -108,7 +108,7 @@ def tweet(text):
         log(e.message)
     else:
         log("Tweeted: " + text.encode('utf-8')) 
-        log result
+        log(result)
 
 def log(message):
     """Log message to logfile."""
