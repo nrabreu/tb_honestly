@@ -88,6 +88,7 @@ def create_tweet():
             print "~~~"
 
     result = random.choice(searchResults)
+    api.create_favorite(result.id_str)
     tweet_text = result.text
     tweet_user = result.user.screen_name
     tweet_text.replace("&amp;","&")
