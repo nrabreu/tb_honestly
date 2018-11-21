@@ -87,28 +87,40 @@ def create_tweet():
             print result.text.encode('utf-8')
             print "~~~"
 
-    final = random.choice(searchResults).text
-    final.replace("&amp;","&")
-    return final
+    result = random.choice(searchResults)
+    tweet_text = result.text
+    tweet_user = result.user.screen_name
+    tweet_text.replace("&amp;","&")
+    return tweet_text, tweet_user
 
 
-def tweet(text):
+def tweet(tweet_text, tweet_user):
     """Send out the text as a tweet."""
     # Twitter authentication
     auth = tweepy.OAuthHandler(C_KEY, C_SECRET)
     auth.set_access_token(A_TOKEN, A_TOKEN_SECRET)
     api = tweepy.API(auth)
-    
-    result = 0
+
+    result = "empty result"
 
     # Send the tweet and log success or failure
     try:
-        result = api.update_status(text)
+        result = api.update_status(tweet_text)
     except tweepy.error.TweepError as e:
         log(e.message)
     else:
-        log("Tweeted: " + text.encode('utf-8')) 
-        log(result)
+        log("Tweeted: " + tweet_text.encode('utf-8')) 
+      
+    tweet_id = result.id_str 
+    tweet_text = "(this honestly brought to you by @" + tweet_user + ")"
+
+    try:
+        result = api.update_status(tweet_text, tweet_id)
+    except tweepy.error.TweepError as e:
+        log(e.message)
+    else:
+        log("Tweeted: " + tweet_text.encode('utf-8')) 
+     
 
 def log(message):
     """Log message to logfile."""
@@ -119,5 +131,5 @@ def log(message):
 
 
 if __name__ == "__main__":
-    tweet_text = create_tweet()
-    tweet(tweet_text)
+    tweet_text, tweet_user = create_tweet()  
+    tweet(tweet_text, tweet_user)
