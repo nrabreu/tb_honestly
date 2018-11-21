@@ -98,15 +98,17 @@ def tweet(text):
     auth = tweepy.OAuthHandler(C_KEY, C_SECRET)
     auth.set_access_token(A_TOKEN, A_TOKEN_SECRET)
     api = tweepy.API(auth)
+    
+    result = 0
 
     # Send the tweet and log success or failure
     try:
-        api.update_status(text)
+        result = api.update_status(text)
     except tweepy.error.TweepError as e:
         log(e.message)
     else:
-        log("Tweeted: " + text.encode('utf-8'))
-
+        log("Tweeted: " + text.encode('utf-8')) 
+        log result
 
 def log(message):
     """Log message to logfile."""
